@@ -166,6 +166,7 @@ function cleanArtistTrack(artist, track) {
    track = track.replace(/\s*\[[^\]]+\]$/, ''); // [whatever]
    track = track.replace(/\s*\([^\)]*version\)$/i, ''); // (whatever version)
    track = track.replace(/\s*\.(avi|wmv|mpg|mpeg|flv)$/i, ''); // video extensions
+   track = track.replace(/\s*(LYRIC VIDEO\s*)?(lyric video\s*)/i, ''); // (LYRIC VIDEO)
    track = track.replace(/\s*(of+icial\s*)?(music\s*)?video/i, ''); // (official)? (music)? video
    track = track.replace(/\s*(of+icial\s*)?(music\s*)?audio/i, ''); // (official)? (music)? audio
    track = track.replace(/\s*(ALBUM TRACK\s*)?(album track\s*)/i, ''); // (ALBUM TRACK)
@@ -227,7 +228,7 @@ function updateNowPlaying() {
 
    // Get clip info from youtube api
    chrome.runtime.sendMessage({type: "xhr", url: googleURL}, function(response) {
-   	var info = JSON.parse(response.text);
+      var info = JSON.parse(response.text);
    	var parsedInfo = parseInfo(info.entry.title.$t);
       var artist = null;
       var track = null;
@@ -244,9 +245,9 @@ function updateNowPlaying() {
         var artistIndex = wholeTitleText.indexOf(artist);
         var separator = findSeparator(wholeTitleText);
 
-        // no separator found, parseInfo would fail too
+        // no separator found, assume rest of the title is track name
         if (separator == null) {
-           parsedInfo = { artist: '', track: '' };
+            track = wholeTitleText.replace(artist, '');
         }
         // separator AFTER artist, common order, cut after separator
         else if (separator.index > artistIndex) {
