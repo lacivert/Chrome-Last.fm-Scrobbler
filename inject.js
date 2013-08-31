@@ -89,12 +89,6 @@ var connectors = [
    },
    
    {
-      label: "Google Plus YT player",
-      matches: ["*://plus.google.com/*youtube/player"],
-      js: ["connectors/google+.js"]
-   },
-   
-   {
       label: "Jango",
       matches: ["*://www.jango.com/*"],
       js: ["connectors/jango.js", "connectors/jango-dom-inject.js"]
@@ -214,7 +208,19 @@ var connectors = [
       label: "Slacker (main page)",
       matches: ["*://www.slacker.com/*"],
       js: ["connectors/slacker2.js"]
-   }   
+   },
+
+   {
+      label: "Daytrotter",
+      matches: ["*://www.daytrotter.com/*"],
+      js: ["connectors/daytrotter.js"]
+   },
+   
+   {
+      label: "AOL Radio",
+      matches: ["*://aolradio.slacker.com/*"],
+      js: ["connectors/aolradio.js"]
+   }    
    
 ];
 

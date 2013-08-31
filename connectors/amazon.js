@@ -1,4 +1,3 @@
-
 /*
  * Chrome-Last.fm-Scrobbler amazon.com "new interface" Connector
  *
@@ -27,14 +26,15 @@ function titleAndArtist() {
   if (mainContentTableRow.size () > 0) {
     return {
       title: mainContentTableRow.children("td.titleCell").attr("title"),
-      artist: mainContentTableRow.children("td.artistCell").attr("title")
+      artist: mainContentTableRow.children("td.artistCell").attr("title"),
+      album: mainContentTableRow.children("td.albumCell").attr("title")
     }
   } else {
     var currentSongDetails = $(".currentSongDetails .title");
+    var currentSongStatus = $(".currentSongStatus > a");
     return {
       title: currentSongDetails.text(),
-      // substring(3) because format is: 'by Artist'
-      artist: currentSongDetails.next().text().substring(3)
+      artist: currentSongStatus.text()
     }
   }
 }
@@ -101,14 +101,15 @@ var module = function() {
   var state = initState();
 
   var parseNewState = function() {
-    var tAndA = titleAndArtist ();
-    var timeAndDuration = currentTimeAndTrackDuration ();
+   var tAndA = titleAndArtist();
+   var timeAndDuration = currentTimeAndTrackDuration();
     return {
-      title : tAndA.title,
-      artist : tAndA.artist,
-      currentTime : timeAndDuration.currentTime,
-      duration : timeAndDuration.trackDuration,
-      track : track (tAndA.title, tAndA.artist)
+      title: tAndA.title,
+      artist: tAndA.artist,
+      album: tAndA.album,
+      currentTime: timeAndDuration.currentTime,
+      duration: timeAndDuration.trackDuration,
+      track: track(tAndA.title, tAndA.artist)
     }
   }
 
