@@ -5,8 +5,8 @@ var lastUrl = '';
 
 // we will observe changes at the main player element
 // which changes (amongst others) on ajax navigation
-var target = document.querySelector('#player-api');
-
+var target = null;
+var feather = false;
 var observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
         // detect first mutation that happens after url has changed
@@ -20,10 +20,14 @@ var observer = new MutationObserver(function(mutations) {
 
 var config = { attributes: true };
 
-observer.observe(target, config);
-
-
-
+target = document.querySelector('#player-api');
+if (!target) {
+    feather = true;
+    updateNowPlaying();
+}
+else {
+    observer.observe(target, config);
+}
 // bind page unload function to discard current "now listening"
 $(window).unload(function() {
 
@@ -162,14 +166,20 @@ function updateNowPlaying() {
    // Get clip info from youtube api
    chrome.runtime.sendMessage({type: "xhr", url: googleURL}, function(response) {
       var info = JSON.parse(response.text);
-   	var parsedInfo = parseInfo(info.entry.title.$t);
+      var parsedInfo = parseInfo(info.entry.title.$t);
       var artist = null;
       var track = null;
-
-      // Use the #eow-title #watch-headline-show-title if available
-      var track_dom = $('#eow-title').clone();
-      var artist_dom = $('#watch-headline-show-title', track_dom);
-
+      var artist_dom = '';
+      var track_dom = '';
+      if (!feather) {
+        // Use the #eow-title #watch-headline-show-title if available
+        track_dom = $('#eow-title').clone();
+        artist_dom = $('#watch-headline-show-title', track_dom);
+      }
+      else {
+        // Otherwise use h1#vt from the YouTube's Feather Layout
+        track_dom = $('h1#vt').clone();
+      }
       // there is a hyperlink of artist in title
       if (artist_dom.length) {
         var wholeTitleText = trim( track_dom.text() );
@@ -204,7 +214,7 @@ function updateNowPlaying() {
 
       // get the duration from the YT API response
       var duration = '';
-   	if (info.entry.media$group.media$content != undefined)
+      if (info.entry.media$group.media$content != undefined)
          duration = info.entry.media$group.media$content[0].duration;
       else if (info.entry.media$group.yt$duration.seconds != undefined)
          duration = info.entry.media$group.yt$duration.seconds;
@@ -215,13 +225,13 @@ function updateNowPlaying() {
          if (response != false) {
             var song = response; // contains valid artist/track now
             // substitute the original duration with the duration of the video
-            chrome.runtime.sendMessage({type: 'nowPlaying', artist: song.artist, track: song.track, duration: duration});
+            chrome.runtime.sendMessage({type: 'nowPlaying', artist: song.artist, track: song.track, duration: duration, source: 'YouTube', sourceId: videoID});
          }
          // on failure send nowPlaying 'unknown song'
          else {
-            chrome.runtime.sendMessage({type: 'nowPlaying', duration: duration});
+            chrome.runtime.sendMessage({type: 'nowPlaying', duration: duration, source: 'YouTube', sourceId: videoID});
          }
-   	});
+    });
 
    });
 

@@ -2,8 +2,8 @@ var lastTrack = null;
 var $r = chrome.runtime.sendMessage;
 
 function scrobble(e) {
-    var artist = $("#gp_performer").text();
-    var title = $("#gp_title").text();
+    var artist = $(".js-player-artist").text();
+    var title = $(".js-player-title").text();
 
     if (lastTrack != artist + " " + title) {
         lastTrack = artist + " " + title;
@@ -25,16 +25,17 @@ function scrobble(e) {
 
 $(function() {
     $(window).unload(function() {
-		// reset the background scrobbler song data
-		chrome.runtime.sendMessage({type: 'reset'});
-		return true;
+        // reset the background scrobbler song data
+        chrome.runtime.sendMessage({type: 'reset'});
+        return true;
     });
 
-    $(document).bind("DOMNodeInserted", function(e) {
-        if (e.target.id === "gp_performer") {
-			$("#gp_info>div").bind('DOMSubtreeModified', function(e) { setTimeout(scrobble, 500) });
-		}
-    });
+    if ($(".b-jambox__controls").length > 0) {
+        $(".b-jambox__controls").bind("DOMSubtreeModified", function(e) {
+            if ($(".b-jambox__button.b-jambox__play.b-jambox__playing").length > 0)
+                setTimeout(scrobble, 500);
+        });
+    }
 });
 
 
@@ -52,4 +53,3 @@ chrome.runtime.onMessage.addListener(
         }
     }
 );
-

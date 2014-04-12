@@ -470,6 +470,14 @@ function submit() {
       params["album[0]"] = song.album;
    }
 
+   if(typeof(song.source) != 'undefined' && song.source != null) {
+      params["source[0]"] = song.source;
+   }
+
+   if(typeof(song.sourceId) != 'undefined' && song.sourceId != null) {
+      params["sourceId[0]"] = song.sourceId;
+   }
+
    var api_sig = apiCallSignature(params);
    var url = apiURL + createQueryString(params) + '&api_sig=' + api_sig;
 
@@ -571,6 +579,12 @@ chrome.runtime.onMessage.addListener(
                      if (typeof(request.album) != 'undefined' && request.album) {
                         song.album = request.album;
                      }
+                     if (typeof(request.sourceId) != 'undefined' && request.sourceId) {
+                        song.sourceId = request.sourceId;
+                     }
+                     if (typeof(request.source) != 'undefined' && request.source) {
+                        song.source = request.source;
+                     }
 
                      // Update page action icon to 'unknown'
                      setActionIcon(ACTION_UNKNOWN, sender.tab.id);
@@ -588,6 +602,12 @@ chrome.runtime.onMessage.addListener(
 
                      if(typeof(request.album) != 'undefined') {
                         song.album = request.album;
+                     }
+                     if (typeof(request.sourceId) != 'undefined' && request.sourceId) {
+                        song.sourceId = request.sourceId;
+                     }
+                     if (typeof(request.source) != 'undefined' && request.source) {
+                        song.source = request.source;
                      }
 
 
