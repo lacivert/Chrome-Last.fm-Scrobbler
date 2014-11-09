@@ -1,10 +1,15 @@
 'use strict';
 
 define([
-	'wrappers/chrome'
-], function(chrome) {
+	'wrappers/chrome',
+	'services/background-ga'
+], function(chrome, GA) {
 
-	var emptyCB = function() {};
+	/**
+	 * Map of click listeners indexed by notification IDs
+	 * @type {{}}
+	 */
+	var clickListeners = {};
 
 	/**
 	 * Checks for permissions and existence of Notifications API
@@ -21,6 +26,19 @@ define([
 		return localStorage.useNotifications == 1;
 	}
 
+	/**
+	 * Sets up listener for click on given notification.
+	 * All clicks are handled internally and transparently passed to listeners, if any.
+	 * Setting multiple listeners for single notification is not supported,
+	 * the last set listener will overwrite any previous.
+	 *
+	 * @param notificationId
+	 * @param callback - notification ID will be passed as a single parameter
+	 */
+	function addOnClickedListener(notificationId, callback) {
+		clickListeners[notificationId] = callback;
+	}
+
 
 
 	function showPlaying(song) {
@@ -28,17 +46,22 @@ define([
 			return;
 		}
 
+		var notificationCreatedCb = function(notificationId) {
+			GA.event('notification', 'playing', 'show');
+			song.metadata.attr('notificationId', notificationId);
+		};
+
 		var createNotification = function(permissionLevel) {
 			if (permissionLevel === 'granted') {
 
 				var options = {
 					type: 'basic',
-					iconUrl: 'icon128.png',
-					title: song.track,
-					message: 'by ' + song.artist
+					iconUrl: song.metadata.artistThumbUrl || 'icon128.png',
+					title: song.getTrack(),
+					message: 'by ' + song.getArtist()
 				};
 
-				chrome.notifications.create('', options, emptyCB);
+				chrome.notifications.create('', options, notificationCreatedCb);
 			}
 		};
 
@@ -51,6 +74,10 @@ define([
 			return;
 		}
 
+		var notificationCreatedCb = function() {
+			GA.event('notification', 'error', 'show');
+		};
+
 		var createNotification = function(permissionLevel) {
 			if (permissionLevel === 'granted') {
 
@@ -61,7 +88,7 @@ define([
 					message: message
 				};
 
-				chrome.notifications.create('', options, emptyCB);
+				chrome.notifications.create('', options, notificationCreatedCb);
 			}
 		};
 
@@ -69,11 +96,82 @@ define([
 	}
 
 
+	/**
+	 * Shows notifications with onclick leading to url to authenticate the extension.
+	 * The auth url is requested after clicking to prevent generating a new token for
+	 * an auth notification which may never be clicked.
+	 *
+	 * @param authUrlGetter {Function} method returning an url to be opened on click
+	 */
+	function showAuthenticate(authUrlGetter) {
+		if (!isAvailable()) {
+			GA.event('notification', 'authenticate', 'open-unavailable');
+
+			// fallback for browsers with no notifications support
+			var authUrl = authUrlGetter();
+			window.open(authUrl, 'scrobbler-auth');
+			return;
+		}
+
+		var notificationCreatedCb = function(notificationId) {
+			addOnClickedListener(notificationId, function() {
+				GA.event('notification', 'authenticate', 'click');
+
+				var authUrl = authUrlGetter();
+				window.open(authUrl, 'scrobbler-auth');
+			});
+
+			GA.event('notification', 'authenticate', 'show');
+		};
+
+		var createNotification = function(permissionLevel) {
+			if (permissionLevel === 'granted') {
+
+				var options = {
+					type: 'basic',
+					iconUrl: '/icon128.png',
+					title: 'Connect your Last.FM account',
+					message: 'Click the notification or connect later in the extension options page',
+					isClickable: true
+				};
+
+				chrome.notifications.create('', options, notificationCreatedCb);
+			}
+		};
+
+		chrome.notifications.getPermissionLevel(createNotification);
+	}
+
+	/**
+	 * Completely removes notification.
+	 * Does nothing if ID does not match any existing notification
+	 */
+	function remove(notificationId) {
+		var onCleared = function() {
+			// nop
+		};
+
+		if (notificationId) {
+			chrome.notifications.clear(notificationId, onCleared);
+		}
+	}
+
+
+	// set up listening for clicks on all notifications
+	chrome.notifications.onClicked.addListener(function(notificationId) {
+		console.log('Notification onClicked: ' + notificationId);
+
+		if (clickListeners[notificationId]) {
+			clickListeners[notificationId](notificationId);
+		}
+	});
 
 
 	return {
 		showPlaying: showPlaying,
-		showError: showError
+		showError: showError,
+		showAuthenticate: showAuthenticate,
+		remove: remove
 	};
 
 });

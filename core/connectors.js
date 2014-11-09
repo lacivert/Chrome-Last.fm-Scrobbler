@@ -55,16 +55,16 @@ define(function() {
 
 		{
 			label: 'Google Play Music',
-			matches: ['*://play.google.com/music/*'],
+			matches: ['*://play.google.com/music/*', '*://play-music.sandbox.google.com/music/*'],
 			js: ['connectors/googlemusic.js']
 		},
 
-//		{
-//			label: 'Google Play Music',
-//			matches: ['*://play.google.com/music/*'],
-//			js: ['connectors/v2/googlemusic.js'],
-//			version: 2
-//		},
+		//{
+		//	label: 'Google Play Music',
+		//	matches: ['*://play.google.com/music/*'],
+		//	js: ['connectors/v2/googlemusic.js'],
+		//	version: 2
+		//},
 
 		{
 			label: 'MySpace',
@@ -104,7 +104,7 @@ define(function() {
 
 		{
 			label: 'Bandcamp',
-			matches: ['*://*.bandcamp.com/*'],
+			matches: ['*://*.bandcamp.com/*', '*://bandcamp.com/discover'],
 			js: ['connectors/bandcamp.js']
 		},
 
@@ -134,7 +134,7 @@ define(function() {
 
 		{
 			label: 'Amazon',
-			matches: ['*://www.amazon.com/gp/dmusic/*/player*', '*://www.amazon.de/gp/dmusic/*/player*', '*://www.amazon.es/gp/dmusic/*/player*', '*://www.amazon.co.uk/gp/dmusic/*/player*'],
+			matches: ['*://www.amazon.com/gp/dmusic/cloudplayer/*', '*://www.amazon.de/gp/dmusic/cloudplayer/*', '*://www.amazon.es/gp/dmusic/cloudplayer/*', '*://www.amazon.co.uk/gp/dmusic/cloudplayer/*'],
 			js: ['connectors/amazon.js']
 		},
 
@@ -208,7 +208,7 @@ define(function() {
 
 		{
 			label: 'Plug.dj',
-			matches: ['http://plug.dj/*'],
+			matches: ['*://plug.dj/*'],
 			js: ['connectors/plugdj.js']
 		},
 
@@ -364,7 +364,7 @@ define(function() {
 
 		{
 			label: 'PLEX',
-			matches: ['*://*32400/web/*'],
+			matches: ['*://*32400/web/*', '*://plex.tv/web/*'],
 			js: ['connectors/plex.js']
 		},
 
@@ -421,6 +421,30 @@ define(function() {
 			label: 'Soundozer',
 			matches: ['*://soundozer.com/*'],
 			js: ['connectors/soundozer.js']
+		},
+
+		{
+			label: '163 Music',
+			matches: ['*://music.163.com/*'],
+			js: ['connectors/163music.js']
+		},
+
+		{
+			label: 'blinkboxMusic',
+			matches: ['*://www.blinkboxmusic.com/*'],
+			js: ['connectors/blinkboxmusic.js']
+		},
+
+		{
+			label: 'luooMusic',
+			matches: ['*://www.luoo.net/*'],
+			js: ['connectors/luoo.js']
+		},
+
+		{
+			label: 'ambientsleepingpill',
+			matches: ['*://*.ambientsleepingpill.com/'],
+			js: ['connectors/ambientsleepingpill.js']
 		}
 	];
 });

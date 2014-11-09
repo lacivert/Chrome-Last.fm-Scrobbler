@@ -36,11 +36,12 @@ var Reactor = function(connector) {
 	 * @param newState
 	 * @param changedFields
 	 */
+	/* jshint unused: false */
 	this.onStateChanged = function(newState, changedFields) {
 		// ignore changes in current time - it can be used in future
-		if (changedFields.indexOf('currentTime') > -1 && changedFields.length === 1) {
-			return;
-		}
+		//if (changedFields.indexOf('currentTime') > -1 && changedFields.length === 1) {
+		//	return;
+		//}
 
 		// distribute all other changes to background script to do all the hard work
 		this.sendStateToBackground(newState);

@@ -1,14 +1,22 @@
+/*
+ * Chrome-Last.fm-Scrobbler PLEX connector by Hm
+ * https://github.com/j4cknife
+ * http://www.last.fm/user/davis1766
+ * 
+ * (based on google music connector)
+ *
+ */
 // State for event handlers
 var state = 'init';
 
 // Used only to remember last song title
 var clipTitle = '';
 
-// Timeout to scrobble track ater minimum time passes
+// Timeout to scrobble track after minimum time passes
 var scrobbleTimeout = null;
 
-// Glabal constant for the song container ....
-var CONTAINER_SELECTOR = 'div#plex.application.show-nav-bar.show-action-bar.show-breadcrumb-bar.show-music-player';
+// Global constant for the song container ....
+var CONTAINER_SELECTOR = 'div#plex';
 
 
 $(function(){
@@ -65,8 +73,8 @@ function parseInfo() {
     var duration = 0;
 
     // Get artist and song names
-    var artistValue = $("button.artist-title.btn-link").text();
-    var trackValue = $("button.track-title.btn-link").text();
+    var artistValue = $("button.grandparent-title.btn-link.btn-metadata-link").text();
+    var trackValue = $("button.item-title.btn-link.btn-metadata-link").text();
     var albumValue = $("h2.album-title").text();
     var durationValue = $("span.player-duration").text();
 
