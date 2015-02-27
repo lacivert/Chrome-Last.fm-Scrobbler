@@ -1,6 +1,6 @@
 {
    "name": "Last.fm Scrobbler",
-   "version": "1.41",
+   "version": "1.44",
 
    "description": "Scrobble music all around the web!",
    "icons": {
@@ -30,6 +30,7 @@
    "permissions": [
       "tabs",
       "notifications",
+      "storage",
       "https://ws.audioscrobbler.com/2.0/",
       "https://gdata.youtube.com/feeds/api/videos/",
       "http://*/",

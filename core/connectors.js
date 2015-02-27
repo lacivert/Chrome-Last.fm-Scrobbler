@@ -53,18 +53,18 @@ define(function() {
 			js: ['connectors/61.js']
 		},
 
-		{
-			label: 'Google Play Music',
-			matches: ['*://play.google.com/music/*', '*://play-music.sandbox.google.com/music/*'],
-			js: ['connectors/googlemusic.js']
-		},
-
 		//{
 		//	label: 'Google Play Music',
-		//	matches: ['*://play.google.com/music/*'],
-		//	js: ['connectors/v2/googlemusic.js'],
-		//	version: 2
+		//	matches: ['*://play.google.com/music/*', '*://play-music.sandbox.google.com/music/*'],
+		//	js: ['connectors/googlemusic.js']
 		//},
+
+		{
+			label: 'Google Play Music',
+			matches: ['*://play.google.com/music/*'],
+			js: ['connectors/v2/googlemusic.js'],
+			version: 2
+		},
 
 		{
 			label: 'MySpace',
@@ -118,6 +118,12 @@ define(function() {
 			label: 'Pandora',
 			matches: ['*://www.pandora.com/*'],
 			js: ['connectors/pandora.js']
+		},
+
+		{
+			label: 'pakartot',
+			matches: ['*://www.pakartot.lt/*'],
+			js: ['connectors/pakartot.js']
 		},
 
 		{
@@ -327,6 +333,12 @@ define(function() {
 		},
 
 		{
+			label: 'New Digitally Imported',
+			matches: ['*://new.di.fm/*'],
+			js: ['connectors/difm2.js']
+		},
+
+		{
 			label: 'Beats Music',
 			matches: ['*://*.beatsmusic.com/*'],
 			js: ['vendor/jquery.cookie.js', 'connectors/beats.js']
@@ -445,6 +457,27 @@ define(function() {
 			label: 'ambientsleepingpill',
 			matches: ['*://*.ambientsleepingpill.com/'],
 			js: ['connectors/ambientsleepingpill.js']
+		},
+
+		{
+			label: 'Blitzr',
+			matches: ['*://*.blitzr.com/*', '*://blitzr.com/*'],
+			js: ['connectors/blitzr.js']
+		},
+
+		{
+			label: 'Bop.fm',
+			matches: ['*://bop.fm/*'],
+			js: ['connectors/v2/bopfm.js'],
+			version: 2
+		},
+
+		{
+			label: 'Radionomy',
+			matches: ['*://www.radionomy.com/*'],
+			js: ['connectors/v2/radionomy.js'],
+			version: 2
 		}
+
 	];
 });
